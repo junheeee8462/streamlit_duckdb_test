@@ -204,7 +204,7 @@ if conn:
 
 
     st.header("직접 SQL 쿼리 실행 (Expert Mode)")
-    st.warning("⚠️ **주의**: 이 기능은 데이터를 영구적으로 변경하거나 손상시킬 수 있습니다. 신중하게 사용하세요.")
+    st.warning("⚠️ **주의**")
 
     with st.form("custom_query_form"):
         # 쿼리 입력 텍스트 영역
