@@ -76,7 +76,7 @@ def get_next_order_id():
 
 # ----------------- Streamlit UI -----------------
 
-st.title("DuckDB 'madang db'")
+st.title("마당DB 도서관리 앱")
 
 if conn:
     # --- 고객 별 주문 조회 섹션 ---
@@ -100,7 +100,10 @@ if conn:
         if submitted and selected_custid is not None:
             try:
                 orders_df = conn.execute(f"""
-                SELECT o.orderid, o.custid, c.name, o.bookid, o.saleprice, o.orderdate FROM Orders o inner join Customer c on c.custid = o.custid WHERE o.custid = {selected_custid} ORDER BY orderid
+                SELECT o.orderid, o.custid, c.name, o.bookid, b.bookdname o.saleprice, o.orderdate 
+                FROM Book b Orders o inner join Customer c on c.custid = o.custid 
+                WHERE o.custid = {selected_custid} , b.bookid = o.bookid
+                ORDER BY orderid
                 """).df()
                 
                 st.subheader(f"CustID {selected_custid} 고객의 주문 내역")
@@ -223,6 +226,5 @@ if conn:
                 else:
                     if run_dml(sql_stripped):
                         st.success(f"쿼리 타입({query_type})이 성공적으로 실행되었습니다. 관련 테이블을 새로고침하여 확인하세요.")
-                    # 오류 발생 시 run_dml 내부에서 이미 st.error 메시지를 출력합니다.
 else:
     st.error("DuckDB 연결이 실패하여 앱을 사용할 수 없습니다.")
