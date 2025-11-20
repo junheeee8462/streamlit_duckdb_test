@@ -1,13 +1,12 @@
 import streamlit as st
 import duckdb
 import pandas as pd
-import os
 
 DB_FILE_PATH = "madang.db"
 
 def get_duckdb_connection():
     try:
-        return duckdb.connect(database=DB_FILE_PATH, read_only=True)
+        return duckdb.connect(database=DB_FILE_PATH, read_only=False)
     except Exception as e:
         st.error(f"DuckDB 연결 오류: {e}")
         st.info(f"'{DB_FILE_PATH}' 파일이 GitHub 리포지토리에 있는지 확인하세요.")
