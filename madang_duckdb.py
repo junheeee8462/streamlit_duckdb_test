@@ -33,9 +33,20 @@ def run_query(sql, return_type='df'):
 
 # ----------------- Streamlit UI -----------------
 
-st.title("DuckDB 'Madang' 데이터 분석 📚")
+st.title("DuckDB 'Madang'")
 
 if conn:
+
+    st.subheader("직접 쿼리 실행하기")
+    user_query = st.text_area("SQL 쿼리를 입력하세요:", "SELECT name, address FROM Customer WHERE custid = 1;")
+    if st.button("쿼리 실행"):
+        try:
+            custom_result = run_query(user_query, "df")
+            st.dataframe(custom_result)
+        except Exception as e:
+            st.error(f"쿼리 실행 중 오류 발생: {e}")
+
+
     st.subheader("Customer 테이블 데이터")
     customer_df = run_query("select * from Customer", "df")
     st.dataframe(customer_df)
@@ -56,12 +67,3 @@ if conn:
     join_df = run_query(join_query)
     st.dataframe(join_df)
 
-    # --- 사용자 입력 쿼리 (선택 사항) ---
-    st.subheader("직접 쿼리 실행하기")
-    user_query = st.text_area("SQL 쿼리를 입력하세요:", "SELECT name, address FROM Customer WHERE custid = 1;")
-    if st.button("쿼리 실행"):
-        try:
-            custom_result = run_query(user_query, "df")
-            st.dataframe(custom_result)
-        except Exception as e:
-            st.error(f"쿼리 실행 중 오류 발생: {e}")
