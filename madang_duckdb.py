@@ -77,6 +77,8 @@ def get_next_order_id():
 # ----------------- Streamlit UI -----------------
 
 st.title("마당DB 도서관리 앱")
+st.title("duckDB 를 사용한 앱")
+st.header("12224365 장준희")
 
 if conn:
     # --- 고객 별 주문 조회 섹션 ---
