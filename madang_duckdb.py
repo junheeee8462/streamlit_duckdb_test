@@ -119,7 +119,8 @@ if conn:
         st.markdown("##### 주문 정보 입력")
         
         order_custid = st.number_input("CustID (숫자)", min_value=1, value=1, step=1)
-        order_bookid = st.text_input("도서 번호")        
+        order_bookid = st.text_input("도서 번호")  
+        order_saleprice = st.number_input("판매가격")
         order_date = time.strftime("'%Y-%m-%d'", time.localtime())  # 현재 날짜를 기본값으로 설정
         submitted = st.form_submit_button("주문 정보 삽입 (INSERT)")
         
