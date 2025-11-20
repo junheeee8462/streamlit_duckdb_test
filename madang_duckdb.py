@@ -62,7 +62,6 @@ def get_book_data():
         st.error(f"테이블 조회 오류: {e}")
         return pd.DataFrame()
 
-# ----------------- 새로운 기능: 다음 OrderID 계산 함수 -----------------
 
 def get_next_order_id():
     """Orders 테이블에서 최대 orderid를 조회하고 1을 더한 값을 반환합니다."""
@@ -103,7 +102,7 @@ if conn:
         if submitted and selected_custid is not None:
             try:
                 orders_df = conn.execute(f"""
-                SELECT * FROM Orders WHERE custid = {selected_custid} ORDER BY orderid
+                SELECT o.orderid, o.custid, c.name, o.bookid, o.saleprice, o.orderdate FROM Orders o inner join Customer c on c.custid = o.custid WHERE o.custid = {selected_custid} ORDER BY orderid
                 """).df()
                 
                 st.subheader(f"CustID {selected_custid} 고객의 주문 내역")
