@@ -100,10 +100,7 @@ if conn:
         if submitted and selected_custid is not None:
             try:
                 orders_df = conn.execute(f"""
-                SELECT o.orderid, o.custid, c.name, o.bookid, b.bookdname, o.saleprice, o.orderdate 
-                FROM Orders o Customer c Book b
-                WHERE o.custid = {selected_custid} and b.bookid = o.bookid and c.custid = o.custid 
-                ORDER BY orderid
+                SELECT o.orderid, o.custid, c.name, o.bookid, o.saleprice, o.orderdate FROM Orders o inner join Customer c on c.custid = o.custid WHERE o.custid = {selected_custid} ORDER BY orderid
                 """).df()
                 
                 st.subheader(f"CustID {selected_custid} 고객의 주문 내역")
