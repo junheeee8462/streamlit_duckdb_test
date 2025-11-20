@@ -49,6 +49,16 @@ def get_Orders_data():
         st.error(f"테이블 조회 오류: {e}")
         return pd.DataFrame()
 
+@st.cache_data(ttl=60) # 1분 캐싱 (데이터가 자주 바뀌지 않는다면 TTL을 더 늘릴 수 있습니다)
+def get_book_data():
+    if conn is None:
+        return pd.DataFrame()
+    try:
+        return conn.execute("SELECT * FROM Books ORDER BY bookid").df()
+    except Exception as e:
+        st.error(f"테이블 조회 오류: {e}")
+        return pd.DataFrame()
+
 
 
 # ----------------- Streamlit UI -----------------
@@ -133,6 +143,8 @@ if conn:
     orders_df = get_Orders_data()
     st.dataframe(orders_df)
 
-
+    st.header("Book 테이블")
+    book_df = get_book_data()
+    st.dataframe(book_df)
 else:
     st.error("DuckDB 연결이 실패하여 앱을 사용할 수 없습니다.")
