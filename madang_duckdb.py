@@ -200,5 +200,47 @@ if conn:
     st.header("Book 테이블")
     book_df = get_book_data()
     st.dataframe(book_df)
+
+
+
+    st.header("직접 SQL 쿼리 실행 (Expert Mode)")
+    st.warning("⚠️ **주의**: 이 기능은 데이터를 영구적으로 변경하거나 손상시킬 수 있습니다. 신중하게 사용하세요.")
+
+    with st.form("custom_query_form"):
+        # 쿼리 입력 텍스트 영역
+        custom_query = st.text_area(
+            "실행할 SQL 쿼리를 입력하세요:", 
+            "SELECT * FROM Customer LIMIT 5;", # 기본 쿼리
+            height=150
+        )
+        execute_button = st.form_submit_button("쿼리 실행")
+        
+        if execute_button:
+            # 쿼리의 첫 번째 키워드를 분석하여 SELECT인지 DML/DDL인지 판단합니다.
+            sql_stripped = custom_query.strip()
+            if not sql_stripped:
+                st.error("쿼리를 입력해 주세요.")
+            else:
+                query_type = sql_stripped.upper().split(' ')[0]
+                
+                if query_type == 'SELECT':
+                    # SELECT 쿼리 실행
+                    try:
+                        # SELECT 쿼리는 캐싱 없이 즉시 결과를 가져옵니다.
+                        result_df = conn.execute(sql_stripped).df()
+                        
+                        st.subheader("쿼리 실행 결과")
+                        st.dataframe(result_df)
+                        st.success("SELECT 쿼리가 성공적으로 실행되었습니다.")
+                        
+                    except Exception as e:
+                        st.error(f"SELECT 쿼리 실행 오류: {e}")
+                        st.code(sql_stripped, language='sql')
+                        
+                else:
+                    # DML/DDL 쿼리 실행 (run_dml 재사용)
+                    if run_dml(sql_stripped):
+                        st.success(f"쿼리 타입({query_type})이 성공적으로 실행되었습니다. 관련 테이블을 새로고침하여 확인하세요.")
+                    # 오류 발생 시 run_dml 내부에서 이미 st.error 메시지를 출력합니다.
 else:
     st.error("DuckDB 연결이 실패하여 앱을 사용할 수 없습니다.")
