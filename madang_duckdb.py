@@ -100,7 +100,7 @@ if conn:
         if submitted and selected_custid is not None:
             try:
                 orders_df = conn.execute(f"""
-                SELECT o.orderid, o.custid, c.name, o.bookid, b.bookdname o.saleprice, o.orderdate 
+                SELECT o.orderid, o.custid, c.name, o.bookid, b.bookdname, o.saleprice, o.orderdate 
                 FROM Book b Orders o inner join Customer c on c.custid = o.custid 
                 WHERE o.custid = {selected_custid} , b.bookid = o.bookid
                 ORDER BY orderid
