@@ -54,7 +54,7 @@ def get_book_data():
     if conn is None:
         return pd.DataFrame()
     try:
-        return conn.execute("SELECT * FROM Books ORDER BY bookid").df()
+        return conn.execute("SELECT * FROM Book ORDER BY bookid").df()
     except Exception as e:
         st.error(f"테이블 조회 오류: {e}")
         return pd.DataFrame()
