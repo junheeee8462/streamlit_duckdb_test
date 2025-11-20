@@ -59,6 +59,30 @@ def get_Orders_data():
 st.title("DuckDB 'madang db'")
 
 if conn:
+    # --- 고객 별 주문 조회 섹션 ---
+    st.header("고객 별 주문 조회")
+
+    with st.form("select_form"):
+        st.markdown("##### 고객 ID를 선택하여 해당 고객의 주문 내역을 조회하세요.")
+        
+        customer_df = get_customer_data()
+        custid_options = customer_df['custid'].tolist()
+        
+        selected_custid = st.selectbox("고객 ID 선택", custid_options)
+        
+        submitted = st.form_submit_button("주문 내역 조회")
+        
+        if submitted:
+            try:
+                orders_df = conn.execute(f"""
+                SELECT * FROM Orders WHERE custid = {selected_custid} ORDER BY orderid
+                """).df()
+                
+                st.subheader(f"CustID {selected_custid} 고객의 주문 내역")
+                st.dataframe(orders_df)
+            except Exception as e:
+                st.error(f"주문 내역 조회 오류: {e}")
+
     # --- 데이터 삽입 섹션 (Form 사용) ---
     st.header("새로운 고객 정보 삽입")
     
@@ -81,6 +105,27 @@ if conn:
             
             if run_dml(insert_sql):
                 st.success(f"CustID {new_custid} 고객 정보가 삽입되었습니다.")
+
+    # --- 주문 정보 삽입 섹션 ---
+    st.header("주문 정보 삽입")
+    with st.form("inesrt_order_form", clear_on_submit=True):
+        st.markdown("##### 주문 정보 입력")
+        
+        order_custid = st.number_input("CustID (숫자)", min_value=1, value=1, step=1)
+        order_item = st.text_input("Item (상품명)", "노트북")
+        order_quantity = st.number_input("Quantity (수량)", min_value=1, value=1, step=1)
+        
+        submitted = st.form_submit_button("주문 정보 삽입 (INSERT)")
+        
+        if submitted:
+            insert_order_sql = f"""
+            INSERT INTO Orders (custid, item, quantity) 
+            VALUES ({order_custid}, '{order_item}', {order_quantity});
+            """
+            
+            if run_dml(insert_order_sql):
+                st.success(f"CustID {order_custid} 고객의 주문 정보가 삽입되었습니다.")
+    
             
     # --- 데이터 확인 섹션 ---
     st.header("Customer 테이블")
