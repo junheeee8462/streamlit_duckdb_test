@@ -172,7 +172,7 @@ if conn:
         order_date_str = datetime.now().strftime("'%Y-%m-%d'") 
         
         # 날짜 입력 필드를 추가할 수도 있지만, 현재 코드는 time.strftime을 사용하고 있어 datetime으로 변경
-        st.caption(f"주문 날짜는 현재 날짜 ({order_date_str.strip(\"' \")})로 자동 설정됩니다.")
+        st.caption(f"주문 날짜는 현재 날짜로 자동 설정됩니다.")
 
         submitted = st.form_submit_button("주문 정보 삽입 (INSERT)")
         
