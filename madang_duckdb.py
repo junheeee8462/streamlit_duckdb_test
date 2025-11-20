@@ -68,7 +68,6 @@ def get_next_order_id():
         return None
     try:
         # SQL을 사용하여 최대 orderid를 조회하고 1을 더합니다.
-        # MAX(orderid)가 NULL일 경우 (테이블이 비어있을 경우) 1을 반환하도록 COALESCE를 사용합니다.
         result = conn.execute("SELECT COALESCE(MAX(orderid), 0) + 1 FROM Orders").fetchone()
         return result[0]
     except Exception as e:
@@ -111,15 +110,13 @@ if conn:
 
     # --- 데이터 삽입 섹션 (Customer) ---
     st.header("새로운 고객 정보 삽입")
-    # ... (Customer 삽입 코드는 그대로 유지)
     with st.form("insert_form", clear_on_submit=True):
         st.markdown("##### 고객 정보 입력")
         
-        # 현재 최대 custid를 조회하여 다음 번호 기본값으로 설정하면 더 편리합니다.
         try:
             next_custid = conn.execute("SELECT COALESCE(MAX(custid), 0) + 1 FROM Customer").fetchone()[0]
         except:
-            next_custid = 6 # 오류 시 기본값
+            next_custid = 0 # 오류 시 기본값
             
         new_custid = st.number_input("CustID (숫자)", min_value=1, value=next_custid, step=1)
         new_name = st.text_input("Name (이름)", "홍길동")
@@ -224,7 +221,6 @@ if conn:
                         st.code(sql_stripped, language='sql')
                         
                 else:
-                    # DML/DDL 쿼리 실행 (run_dml 재사용)
                     if run_dml(sql_stripped):
                         st.success(f"쿼리 타입({query_type})이 성공적으로 실행되었습니다. 관련 테이블을 새로고침하여 확인하세요.")
                     # 오류 발생 시 run_dml 내부에서 이미 st.error 메시지를 출력합니다.
